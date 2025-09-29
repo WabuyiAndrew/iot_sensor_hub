@@ -660,18 +660,3 @@ function validateTankData(tankData, isUpdate = false) {
 
   return errors
 }
-
-
-
-
-
-
-// REACT_APP_BASE_URL=https://api.2tume.com
-
-
-
-// backend .env file
-// PORT=5050
-// MONGODB_URI=mongodb+srv://mukweliandy256:mukweli256@iotweb.zbrakwy.mongodb.net/taskm?retryWrites=true&w=majority&appName=iotweb
-// TOKEN_KEY=1f8d716b0149fa7c773477363234819f3f616fa13bb3245876e1fd6c3b17139fde01d5be2dbfe2d35bb896a1208fa2bbe9228ad9dc78794e569d4a5c1aaf3a50
-// CLIENT_URL=https://2tume.com # <-- IMPORTANT: Changed from localhost to your public domain
