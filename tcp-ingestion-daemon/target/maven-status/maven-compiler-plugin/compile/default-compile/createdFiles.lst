@@ -1,0 +1,4 @@
+com\iot\HttpBackendForwarder.class
+com\iot\tools\SensorLogReplayer.class
+com\iot\Main.class
+com\iot\TcpIngestionDaemon.class

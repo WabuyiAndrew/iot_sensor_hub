@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Define CSS variables for light mode (default) */
+:root {
+  color-scheme: light;
+  --text-color: #374151; /* Default light mode text color */
+  --background-color: #ffffff;
+  --border-color: #e5e7eb;
+  --card-bg-light: #f9fafb;
+  --button-bg-light: #e5e7eb;
+  --button-text-light: #374151;
+  --button-hover-bg-light: #d1d5db;
+}
+
+/* Define CSS variables for dark mode (when .dark class is present on html) */
+.dark {
+  color-scheme: dark;
+  --text-color: #d1d5db; /* Dark mode text color */
+  --background-color: #121317;
+  --border-color: #374151;
+  --card-bg-light: #1f2937;
+  --button-bg-light: #374151;
+  --button-text-light: #e2e8f0;
+  --button-hover-bg-light: #4b5563;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+/* src/index.css */
+
+/* ... (your existing Tailwind imports and other global styles) ... */
+
+/* Force input text color to white in dark mode, especially for autofill */
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+.dark input:-webkit-autofill:active {
+    -webkit-text-fill-color: white !important; /* Forces text to white */
+    caret-color: white !important; /* Ensures cursor is visible */
+    background-color: transparent !important; /* Prevents autofill background from showing */
+    background-image: none !important; /* Ensures no background image is forced */
+    box-shadow: 0 0 0px 1000px #1f2937 inset !important; /* Matches dark mode input background */
+    border-color: #4b5563 !important; /* Matches dark mode input border */
+}
+
+/* Also ensure normal dark mode input text is white */
+.dark input,
+.dark textarea,
+.dark select,
+.dark option {
+    color: white !important; /* Force text to white for all inputs/selects in dark mode */
+}
