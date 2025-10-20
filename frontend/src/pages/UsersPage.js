@@ -44,7 +44,7 @@ const UsersPage = () => {
   // Determine base URL from environment variable for API calls.
   // Prioritizes NEXT_PUBLIC_BASE_URL for Next.js, then REACT_APP_BASE_URL for Create React App,
   // falling back to a default localhost URL.
-  const baseurl = process.env.NEXT_PUBLIC_BASE_URL || process.env.REACT_APP_BASE_URL || "http://localhost:5000"
+  const baseurl = process.env.NEXT_PUBLIC_BASE_URL || process.env.REACT_APP_BASE_URL || "http://localhost:5050"
 
   // Get user authentication context
   const { user, isAuthenticated } = useAuth()
@@ -420,21 +420,19 @@ const UsersPage = () => {
             <div className="flex bg-gray-100 dark:bg-gray-700 rounded-xl p-1">
               <button
                 onClick={() => setViewMode("grid")}
-                className={`p-2 rounded-lg transition-colors duration-200 ${
-                  viewMode === "grid"
+                className={`p-2 rounded-lg transition-colors duration-200 ${viewMode === "grid"
                     ? "bg-white dark:bg-gray-600 shadow-sm"
                     : "hover:bg-gray-200 dark:hover:bg-gray-600"
-                }`}
+                  }`}
               >
                 <Grid3X3 className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`p-2 rounded-lg transition-colors duration-200 ${
-                  viewMode === "list"
+                className={`p-2 rounded-lg transition-colors duration-200 ${viewMode === "list"
                     ? "bg-white dark:bg-gray-600 shadow-sm"
                     : "hover:bg-gray-200 dark:hover:bg-gray-600"
-                }`}
+                  }`}
               >
                 <List className="w-5 h-5" />
               </button>
@@ -480,11 +478,10 @@ const UsersPage = () => {
                 <div className="ml-3 flex-1">
                   <h3 className="font-bold text-lg text-gray-800 dark:text-gray-100 truncate">{user.username}</h3>
                   <span
-                    className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                      user.role === "admin"
+                    className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${user.role === "admin"
                         ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
                         : "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
-                    }`}
+                      }`}
                   >
                     {user.role}
                   </span>
@@ -578,11 +575,10 @@ const UsersPage = () => {
                     <td className="px-6 py-4 text-sm text-gray-900 dark:text-gray-100">{user.emailid}</td>
                     <td className="px-6 py-4">
                       <span
-                        className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                          user.role === "admin"
+                        className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${user.role === "admin"
                             ? "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
                             : "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400"
-                        }`}
+                          }`}
                       >
                         {user.role}
                       </span>

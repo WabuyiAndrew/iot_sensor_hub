@@ -163,7 +163,7 @@ const MapPage = () => {
   const [lastRefresh, setLastRefresh] = useState(new Date())
   const [cookies] = useCookies(["token"])
 
-  const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5000"
+  const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5050"
 
   // Get data from context for alerts
   const { userRole, allDevicesSensorData, globalAlerts, userInfo } = useOutletContext()
@@ -189,73 +189,73 @@ const MapPage = () => {
 
   // Fetch real devices from API
   // Fetch devices from API with role-based logic
-const fetchDevices = useCallback(async () => {
-  if (!loading) setRefreshing(true);
-  setError(null);
+  const fetchDevices = useCallback(async () => {
+    if (!loading) setRefreshing(true);
+    setError(null);
 
-  if (!cookies.token) {
-    setError("You are not authenticated. Please log in to view device locations.");
-    setLoading(false);
-    setRefreshing(false);
-    return;
-  }
+    if (!cookies.token) {
+      setError("You are not authenticated. Please log in to view device locations.");
+      setLoading(false);
+      setRefreshing(false);
+      return;
+    }
 
-  // CRITICAL FIX: Select the correct endpoint based on user role
-  const endpoint = userRole === "admin" ? `${baseurl}/api/devices` : `${baseurl}/api/devices/my-devices`;
+    // CRITICAL FIX: Select the correct endpoint based on user role
+    const endpoint = userRole === "admin" ? `${baseurl}/api/devices` : `${baseurl}/api/devices/my-devices`;
 
-  try {
-    console.log(`[MapPage] Fetching devices from ${endpoint}...`);
+    try {
+      console.log(`[MapPage] Fetching devices from ${endpoint}...`);
 
-    // Prepare API params based on user role and filters
-    const params = {};
-    // Only apply filters/search for the admin route
-    if (userRole === "admin") {
-      if (filterType !== "all") params.type = deviceTypeMap[filterType];
-      if (filterStatus !== "all") params.status = filterStatus;
-      if (searchTerm) params.search = searchTerm;
-    }
+      // Prepare API params based on user role and filters
+      const params = {};
+      // Only apply filters/search for the admin route
+      if (userRole === "admin") {
+        if (filterType !== "all") params.type = deviceTypeMap[filterType];
+        if (filterStatus !== "all") params.status = filterStatus;
+        if (searchTerm) params.search = searchTerm;
+      }
 
-    const response = await axios.get(endpoint, {
-      headers: { Authorization: `Bearer ${cookies.token}` },
-      params,
-    });
+      const response = await axios.get(endpoint, {
+        headers: { Authorization: `Bearer ${cookies.token}` },
+        params,
+      });
 
-    console.log("[MapPage] Devices API response:", response.data);
-    const fetchedDevices = response.data.data || [];
+      console.log("[MapPage] Devices API response:", response.data);
+      const fetchedDevices = response.data.data || [];
 
-    // Filter devices that have valid GPS coordinates
-    const devicesWithGPS = fetchedDevices.filter(
-      (d) =>
-        d &&
-        d.gpsCoordinates &&
-        typeof d.gpsCoordinates.latitude === "number" &&
-        !isNaN(d.gpsCoordinates.latitude) &&
-        typeof d.gpsCoordinates.longitude === "number" &&
-        !isNaN(d.gpsCoordinates.longitude) &&
-        d.gpsCoordinates.latitude !== null &&
-        d.gpsCoordinates.longitude !== null &&
-        Math.abs(d.gpsCoordinates.latitude) <= 90 &&
-        Math.abs(d.gpsCoordinates.longitude) <= 180
-    );
+      // Filter devices that have valid GPS coordinates
+      const devicesWithGPS = fetchedDevices.filter(
+        (d) =>
+          d &&
+          d.gpsCoordinates &&
+          typeof d.gpsCoordinates.latitude === "number" &&
+          !isNaN(d.gpsCoordinates.latitude) &&
+          typeof d.gpsCoordinates.longitude === "number" &&
+          !isNaN(d.gpsCoordinates.longitude) &&
+          d.gpsCoordinates.latitude !== null &&
+          d.gpsCoordinates.longitude !== null &&
+          Math.abs(d.gpsCoordinates.latitude) <= 90 &&
+          Math.abs(d.gpsCoordinates.longitude) <= 180
+      );
 
-    console.log("[MapPage] Devices with valid GPS:", devicesWithGPS);
-    setDevices(devicesWithGPS);
-    setError(null);
-  } catch (err) {
-    console.error("Error fetching device locations:", err.response?.data || err.message);
-    const errorMessage =
-      err.response?.data?.message ||
-      "Failed to load device locations. Please ensure you are logged in and have permission.";
-    setError(errorMessage);
-    if (loading) {
-      toast.error(errorMessage);
-    }
-    setDevices([]);
-  } finally {
-    setLoading(false);
-    setRefreshing(false);
-  }
-}, [baseurl, cookies.token, filterType, filterStatus, searchTerm, loading, userRole]);
+      console.log("[MapPage] Devices with valid GPS:", devicesWithGPS);
+      setDevices(devicesWithGPS);
+      setError(null);
+    } catch (err) {
+      console.error("Error fetching device locations:", err.response?.data || err.message);
+      const errorMessage =
+        err.response?.data?.message ||
+        "Failed to load device locations. Please ensure you are logged in and have permission.";
+      setError(errorMessage);
+      if (loading) {
+        toast.error(errorMessage);
+      }
+      setDevices([]);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, [baseurl, cookies.token, filterType, filterStatus, searchTerm, loading, userRole]);
 
   // Fetch devices on component mount and when filters change
   useEffect(() => {
@@ -608,8 +608,8 @@ const fetchDevices = useCallback(async () => {
                 center={mapBounds.center || defaultPosition}
                 zoom={mapBounds.zoom || defaultZoom}
                 bounds={mapBounds.bounds}
-                boundsOptions={{ 
-                  padding: [40, 40], 
+                boundsOptions={{
+                  padding: [40, 40],
                   maxZoom: 15 // Good max zoom for detailed view
                 }}
                 style={{ height: "100%", width: "100%" }}
@@ -620,8 +620,8 @@ const fetchDevices = useCallback(async () => {
                 maxZoom={18} // Allow detailed zoom in
                 key={`osm-map-${filteredDevices.length}-${mapStyle}`} // Force re-render when devices or style changes
               >
-                <TileLayer 
-                  url={osmTileLayerConfigs[mapStyle].url} 
+                <TileLayer
+                  url={osmTileLayerConfigs[mapStyle].url}
                   attribution={osmTileLayerConfigs[mapStyle].attribution}
                   maxZoom={18}
                   subdomains={['a', 'b', 'c']}
@@ -657,15 +657,14 @@ const fetchDevices = useCallback(async () => {
                         <div className="p-4">
                           <div className="flex items-center mb-4">
                             <div
-                              className={`w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold mr-4 ${
-                                status === "critical"
+                              className={`w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold mr-4 ${status === "critical"
                                   ? "bg-red-500"
                                   : status === "warning"
                                     ? "bg-yellow-500"
                                     : status === "offline"
                                       ? "bg-gray-500"
                                       : "bg-green-500"
-                              }`}
+                                }`}
                             >
                               <HardDrive className="w-6 h-6" />
                             </div>
@@ -707,9 +706,8 @@ const fetchDevices = useCallback(async () => {
 
                             <div className="flex items-center justify-between">
                               <span
-                                className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
-                                  device.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-                                }`}
+                                className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${device.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+                                  }`}
                               >
                                 {device.isActive ? (
                                   <Wifi className="w-3 h-3 mr-1" />

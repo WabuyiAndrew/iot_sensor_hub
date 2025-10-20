@@ -31,7 +31,7 @@ import {
 import { Link, useOutletContext } from "react-router-dom"
 import { toast } from "react-hot-toast"
 
-const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5000"
+const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5050"
 
 const deviceTypeMap = {
   "Air Quality": "air_quality",
@@ -64,9 +64,9 @@ const statusDisplayMap = {
 // Helper function to normalize status values
 const normalizeStatus = (status) => {
   if (!status) return "offline"
-  
+
   const statusStr = status.toString().toLowerCase()
-  
+
   // Map various status formats to our enum values
   switch (statusStr) {
     case "on":
@@ -181,7 +181,7 @@ function DevicePage() {
   //           sortOrder: sortOrderField,
   //         },
   //       })
-        
+
   //       // Normalize status values from backend
   //       const normalizedDevices = Array.isArray(response.data.data) 
   //         ? response.data.data.map(device => ({
@@ -189,7 +189,7 @@ function DevicePage() {
   //             status: normalizeStatus(device.status)
   //           }))
   //         : []
-        
+
   //       setDevices(normalizedDevices)
   //       if (!loading || search || type !== "all" || status !== "all") {
   //         toast.success(search ? "Devices filtered successfully!" : "Devices loaded successfully!")
@@ -210,52 +210,52 @@ function DevicePage() {
   // )
 
   const fetchDevices = useCallback(
-  async (search = "", type = "all", status = "all", sortByField = "createdAt", sortOrderField = "desc") => {
-    setLoading(true);
-    setError(null);
+    async (search = "", type = "all", status = "all", sortByField = "createdAt", sortOrderField = "desc") => {
+      setLoading(true);
+      setError(null);
 
-    // Determine the API endpoint based on the user's role
-    const endpoint = userRole === "admin" ? `${baseurl}/api/devices` : `${baseurl}/api/devices/my-devices`;
+      // Determine the API endpoint based on the user's role
+      const endpoint = userRole === "admin" ? `${baseurl}/api/devices` : `${baseurl}/api/devices/my-devices`;
 
-    try {
-      const response = await axios.get(endpoint, {
-        headers: {
-          Authorization: `Bearer ${cookies.token}`,
-        },
-        // The params object is only relevant for the 'admin' endpoint
-        params: userRole === "admin" ? { 
-          search,
-          type: type !== "all" ? deviceTypeMap[type] || type : undefined,
-          status: status !== "all" ? status : undefined,
-          sortBy: sortByField,
-          sortOrder: sortOrderField,
-        } : {},
-      });
+      try {
+        const response = await axios.get(endpoint, {
+          headers: {
+            Authorization: `Bearer ${cookies.token}`,
+          },
+          // The params object is only relevant for the 'admin' endpoint
+          params: userRole === "admin" ? {
+            search,
+            type: type !== "all" ? deviceTypeMap[type] || type : undefined,
+            status: status !== "all" ? status : undefined,
+            sortBy: sortByField,
+            sortOrder: sortOrderField,
+          } : {},
+        });
 
-      const normalizedDevices = Array.isArray(response.data.data) 
-        ? response.data.data.map(device => ({
+        const normalizedDevices = Array.isArray(response.data.data)
+          ? response.data.data.map(device => ({
             ...device,
             status: normalizeStatus(device.status)
-        }))
-        : [];
-      
-      setDevices(normalizedDevices);
-      toast.success(userRole === "admin" ? "All devices loaded successfully!" : "My devices loaded successfully!");
-    } catch (err) {
-      console.error("Error fetching devices:", err.response?.data || err.message);
-      const errorMessage = userRole === "admin" 
-        ? "Failed to load devices. Please ensure you have admin permission."
-        : "Failed to load your devices. Please ensure you are logged in.";
-      
-      setError(errorMessage);
-      setDevices([]);
-      toast.error(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  },
-  [cookies.token, userRole] // Add userRole to the dependency array
-);
+          }))
+          : [];
+
+        setDevices(normalizedDevices);
+        toast.success(userRole === "admin" ? "All devices loaded successfully!" : "My devices loaded successfully!");
+      } catch (err) {
+        console.error("Error fetching devices:", err.response?.data || err.message);
+        const errorMessage = userRole === "admin"
+          ? "Failed to load devices. Please ensure you have admin permission."
+          : "Failed to load your devices. Please ensure you are logged in.";
+
+        setError(errorMessage);
+        setDevices([]);
+        toast.error(errorMessage);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [cookies.token, userRole] // Add userRole to the dependency array
+  );
 
   useEffect(() => {
     if (cookies.token) {
@@ -425,7 +425,7 @@ function DevicePage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
     if (!validateForm()) {
       toast.error("Please fix the form errors before submitting.")
       return
@@ -550,7 +550,7 @@ function DevicePage() {
     const status = normalizeStatus(device.status)
     const statusInfo = statusDisplayMap[status] || statusDisplayMap.offline
     const IconComponent = statusInfo.icon
-    
+
     return {
       status,
       label: statusInfo.label,
@@ -609,11 +609,10 @@ function DevicePage() {
             <div className="flex gap-2 sm:gap-3">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 rounded-xl transition-all duration-200 text-sm sm:text-base ${
-                  showFilters
+                className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 rounded-xl transition-all duration-200 text-sm sm:text-base ${showFilters
                     ? "bg-orange-500 text-white shadow-md"
                     : "bg-white/70 dark:bg-gray-700/70 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600"
-                }`}
+                  }`}
               >
                 <Filter className="w-4 h-4" />
                 <span className="hidden sm:inline">Filters</span>
@@ -688,21 +687,19 @@ function DevicePage() {
               <div className="flex bg-gray-100/70 dark:bg-gray-700/70 backdrop-blur-sm rounded-xl p-1 ml-auto">
                 <button
                   onClick={() => setViewMode("grid")}
-                  className={`p-2 rounded-lg transition-colors duration-200 ${
-                    viewMode === "grid"
+                  className={`p-2 rounded-lg transition-colors duration-200 ${viewMode === "grid"
                       ? "bg-white dark:bg-gray-600 shadow-sm"
                       : "hover:bg-gray-200 dark:hover:bg-gray-600"
-                  }`}
+                    }`}
                 >
                   <Grid3X3 className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
                 <button
                   onClick={() => setViewMode("list")}
-                  className={`p-2 rounded-lg transition-colors duration-200 ${
-                    viewMode === "list"
+                  className={`p-2 rounded-lg transition-colors duration-200 ${viewMode === "list"
                       ? "bg-white dark:bg-gray-600 shadow-sm"
                       : "hover:bg-gray-200 dark:hover:bg-gray-600"
-                  }`}
+                    }`}
                 >
                   <List className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
@@ -726,7 +723,7 @@ function DevicePage() {
             {filteredAndSortedDevices.map((device) => {
               const statusDisplay = getStatusDisplay(device)
               const StatusIcon = statusDisplay.icon
-              
+
               return (
                 <div
                   key={device._id}
@@ -781,13 +778,12 @@ function DevicePage() {
                     )}
                     <div className="flex items-center">
                       <span
-                        className={`inline-block px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${
-                          statusDisplay.color === 'green'
+                        className={`inline-block px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${statusDisplay.color === 'green'
                             ? "bg-green-100/70 text-green-800 dark:bg-green-900/30 dark:text-green-400 backdrop-blur-sm"
                             : statusDisplay.color === 'yellow'
-                            ? "bg-yellow-100/70 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 backdrop-blur-sm"
-                            : "bg-red-100/70 text-red-800 dark:bg-red-900/30 dark:text-red-400 backdrop-blur-sm"
-                        }`}
+                              ? "bg-yellow-100/70 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 backdrop-blur-sm"
+                              : "bg-red-100/70 text-red-800 dark:bg-red-900/30 dark:text-red-400 backdrop-blur-sm"
+                          }`}
                       >
                         {statusDisplay.label}
                       </span>
@@ -857,7 +853,7 @@ function DevicePage() {
                   {filteredAndSortedDevices.map((device) => {
                     const statusDisplay = getStatusDisplay(device)
                     const StatusIcon = statusDisplay.icon
-                    
+
                     return (
                       <tr
                         key={device._id}
@@ -886,13 +882,12 @@ function DevicePage() {
                         </td>
                         <td className="px-4 sm:px-6 py-3 sm:py-4">
                           <span
-                            className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm ${
-                              statusDisplay.color === 'green'
+                            className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm ${statusDisplay.color === 'green'
                                 ? "bg-green-100/70 text-green-800 dark:bg-green-900/30 dark:text-green-400"
                                 : statusDisplay.color === 'yellow'
-                                ? "bg-yellow-100/70 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
-                                : "bg-red-100/70 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-                            }`}
+                                  ? "bg-yellow-100/70 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400"
+                                  : "bg-red-100/70 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                              }`}
                           >
                             <StatusIcon className="w-3 h-3 mr-1" />
                             {statusDisplay.label}
@@ -994,9 +989,8 @@ function DevicePage() {
                     value={formState.name}
                     onChange={handleInputChange}
                     required
-                    className={`w-full px-4 py-3 rounded-xl border ${
-                      formErrors.name ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                    } bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200`}
+                    className={`w-full px-4 py-3 rounded-xl border ${formErrors.name ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                      } bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200`}
                     placeholder="e.g., Office Air Quality Monitor"
                   />
                   {formErrors.name && <p className="text-red-500 text-sm mt-1">{formErrors.name}</p>}
@@ -1017,9 +1011,8 @@ function DevicePage() {
                     value={formState.serialNumber}
                     onChange={handleInputChange}
                     required
-                    className={`w-full px-4 py-3 rounded-xl border ${
-                      formErrors.serialNumber ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                    } bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200 font-mono`}
+                    className={`w-full px-4 py-3 rounded-xl border ${formErrors.serialNumber ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                      } bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200 font-mono`}
                     placeholder="e.g., AQ001-2024-001"
                   />
                   {formErrors.serialNumber && <p className="text-red-500 text-sm mt-1">{formErrors.serialNumber}</p>}
@@ -1036,9 +1029,8 @@ function DevicePage() {
                     value={formState.type}
                     onChange={handleInputChange}
                     required
-                    className={`w-full px-4 py-3 rounded-xl border ${
-                      formErrors.type ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                    } bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200`}
+                    className={`w-full px-4 py-3 rounded-xl border ${formErrors.type ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                      } bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200`}
                   >
                     {deviceTypes.map((type) => (
                       <option key={type} value={type}>
@@ -1060,9 +1052,8 @@ function DevicePage() {
                     value={formState.status}
                     onChange={handleInputChange}
                     required
-                    className={`w-full px-4 py-3 rounded-xl border ${
-                      formErrors.status ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                    } bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200`}
+                    className={`w-full px-4 py-3 rounded-xl border ${formErrors.status ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                      } bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200`}
                   >
                     <option value="online">Online</option>
                     <option value="offline">Offline</option>
@@ -1109,9 +1100,8 @@ function DevicePage() {
                         max="90"
                         value={formState.gpsCoordinates.latitude}
                         onChange={handleInputChange}
-                        className={`w-full px-3 py-2 rounded-lg border ${
-                          formErrors.latitude ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                        } bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200`}
+                        className={`w-full px-3 py-2 rounded-lg border ${formErrors.latitude ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                          } bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200`}
                         placeholder="e.g., 40.7128"
                       />
                       {formErrors.latitude && <p className="text-red-500 text-xs mt-1">{formErrors.latitude}</p>}
@@ -1129,9 +1119,8 @@ function DevicePage() {
                         max="180"
                         value={formState.gpsCoordinates.longitude}
                         onChange={handleInputChange}
-                        className={`w-full px-3 py-2 rounded-lg border ${
-                          formErrors.longitude ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                        } bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200`}
+                        className={`w-full px-3 py-2 rounded-lg border ${formErrors.longitude ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                          } bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200`}
                         placeholder="e.g., -74.0060"
                       />
                       {formErrors.longitude && <p className="text-red-500 text-xs mt-1">{formErrors.longitude}</p>}
@@ -1172,9 +1161,8 @@ function DevicePage() {
                     max="100"
                     value={formState.batteryLevel}
                     onChange={handleInputChange}
-                    className={`w-full px-4 py-3 rounded-xl border ${
-                      formErrors.batteryLevel ? "border-red-500" : "border-gray-300 dark:border-gray-600"
-                    } bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200`}
+                    className={`w-full px-4 py-3 rounded-xl border ${formErrors.batteryLevel ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                      } bg-white/70 dark:bg-gray-700/70 backdrop-blur-sm text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200`}
                     placeholder="100"
                   />
                   {formErrors.batteryLevel && <p className="text-red-500 text-sm mt-1">{formErrors.batteryLevel}</p>}

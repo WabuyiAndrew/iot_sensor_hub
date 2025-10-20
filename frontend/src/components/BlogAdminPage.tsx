@@ -8,7 +8,7 @@ import axios from "axios"
 import { useCookies } from "react-cookie"
 import toast from "react-hot-toast"
 
-const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5000"
+const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5050"
 
 interface BlogPost {
   _id: string
@@ -445,9 +445,8 @@ export default function BlogAdminPage() {
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex gap-2 flex-wrap">
                       <span
-                        className={`px-2 py-1 text-xs rounded-full ${
-                          post.published ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
-                        }`}
+                        className={`px-2 py-1 text-xs rounded-full ${post.published ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
+                          }`}
                       >
                         {post.published ? "Published" : "Draft"}
                       </span>

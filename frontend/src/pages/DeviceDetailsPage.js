@@ -262,7 +262,7 @@ const DeviceDetailsPage = () => {
   const [selectedRange, setSelectedRange] = useState("daily");
   const [refreshing, setRefreshing] = useState(false);
   const [cookies] = useCookies(["token"]);
-  const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5000";
+  const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5050";
 
   // Custom date range state for month selections
   const [customStartDate, setCustomStartDate] = useState(null);
@@ -325,9 +325,9 @@ const DeviceDetailsPage = () => {
 
     setSensorDataLoading(true);
     try {
-                const response = await axios.get(`${baseurl}/api/devices/sensor-data/latest/${device.serialNumber}`, {
-            headers: { Authorization: `Bearer ${cookies.token}` },
-          });
+      const response = await axios.get(`${baseurl}/api/devices/sensor-data/latest/${device.serialNumber}`, {
+        headers: { Authorization: `Bearer ${cookies.token}` },
+      });
       if (response.data.success && response.data.data) {
         setCurrentSensorData({
           ...response.data.data,
@@ -424,7 +424,7 @@ const DeviceDetailsPage = () => {
     try {
       // Use the historical-range endpoint for today to get latest data with proper device type filtering
       const today = format(new Date(), 'yyyy-MM-dd');
-      
+
       const response = await axios.get(`${baseurl}/api/sensor/historical-range`, {
         headers: { Authorization: `Bearer ${cookies.token}` },
         params: {
@@ -441,7 +441,7 @@ const DeviceDetailsPage = () => {
       if (response.data.success && response.data.data) {
         // Process the data to get the latest readings
         let latestData = {};
-        
+
         if (Array.isArray(response.data.data) && response.data.data.length > 0) {
           // Get the most recent data point
           latestData = response.data.data[response.data.data.length - 1];
@@ -462,7 +462,7 @@ const DeviceDetailsPage = () => {
       }
     } catch (error) {
       console.error("❌ Error fetching device-specific analytics:", error);
-      
+
       // Final fallback to local database sensor data endpoint
       console.log("🔄 Trying local database fallback...");
       await fetchCurrentSensorData();
@@ -607,7 +607,7 @@ const DeviceDetailsPage = () => {
       const startDate = parseISO(format(customStartDate, 'yyyy-MM-dd'));
       const endDate = parseISO(format(customEndDate, 'yyyy-MM-dd'));
       const daysDiff = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
-      
+
       let groupBy = "day";
       if (daysDiff <= 1) groupBy = "hour";
       else if (daysDiff <= 7) groupBy = "day";
@@ -665,7 +665,7 @@ const DeviceDetailsPage = () => {
 
         if (hasExternalApiFormat) {
           console.log(`📊 Processing external API format data for ${deviceType}`);
-          
+
           // Get the first parameter to determine the length of data arrays
           const firstParam = relevantParams.find((param) => {
             const externalParamName = getExternalApiParameterName(param);
@@ -685,7 +685,7 @@ const DeviceDetailsPage = () => {
           const processedData = [];
           for (let i = 0; i < dataLength; i++) {
             let timestamp;
-            
+
             // FIXED: Use custom date range if available
             if (customStartDate && customEndDate) {
               // For custom date ranges, distribute timestamps evenly across the range
@@ -741,7 +741,7 @@ const DeviceDetailsPage = () => {
           timestamp: new Date().toISOString(),
           ...analyticsData
         }];
-        
+
         return processedData;
       }
 
@@ -772,7 +772,7 @@ const DeviceDetailsPage = () => {
       if (Array.isArray(rangeDataResponse.data[externalParamName])) {
         const dataArray = rangeDataResponse.data[externalParamName];
         const groupBy = rangeDataResponse.groupBy || "day";
-        
+
         console.log(`📊 Found array data for ${externalParamName}:`, dataArray);
         console.log(`📊 Group by: ${groupBy}`);
 
@@ -782,14 +782,14 @@ const DeviceDetailsPage = () => {
             if (value === null || value === undefined) return null;
 
             let timestamp;
-            
+
             // FIXED: Use the actual custom date range for timestamp generation
             if (customStartDate && customEndDate) {
               // Calculate proper timestamps within the selected date range
               const startDate = new Date(customStartDate);
               const endDate = new Date(customEndDate);
               const totalDays = differenceInDays(endDate, startDate) + 1;
-              
+
               if (groupBy === 'hour') {
                 // For hourly data, distribute across 24 hours of the selected day
                 const hoursStep = 24 / dataArray.length;
@@ -933,9 +933,9 @@ const DeviceDetailsPage = () => {
   const getChartData = useCallback(
     (data, parameterName, unit, isDark, chartType) => {
       if (!data || data.length === 0) {
-        return { 
-          labels: [], 
-          datasets: [] 
+        return {
+          labels: [],
+          datasets: []
         };
       }
 
@@ -954,7 +954,7 @@ const DeviceDetailsPage = () => {
       };
 
       const baseColor = getColor();
-      
+
       // FIXED: Safer dataset configuration to prevent Chart.js errors
       const datasetConfig = {
         label: `${parameterName.replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())} (${unit || ""})`,
@@ -995,11 +995,11 @@ const DeviceDetailsPage = () => {
     (paramName = "") => {
       const lowerCaseParamName = paramName.toLowerCase();
       const isDbm = DBM_NAMES.some((name) => lowerCaseParamName.includes(name.toLowerCase()));
-      
+
       let yAxisSettings = {
         beginAtZero: true,
       };
-      
+
       if (isDbm) {
         yAxisSettings = {
           reverse: true,
@@ -1030,13 +1030,13 @@ const DeviceDetailsPage = () => {
         if (customStartDate && customEndDate) {
           // FIXED: For custom date ranges (months), set time bounds
           const daysDiff = Math.ceil((new Date(customEndDate) - new Date(customStartDate)) / (1000 * 60 * 60 * 24));
-          
+
           console.log(`📊 Chart time config for custom range: ${daysDiff} days`);
-          
+
           // Set the time bounds to match the selected date range
           baseConfig.min = customStartDate;
           baseConfig.max = customEndDate;
-          
+
           if (daysDiff <= 1) {
             baseConfig.time = {
               unit: "hour",
@@ -1094,7 +1094,7 @@ const DeviceDetailsPage = () => {
           baseConfig.time = {
             unit: "day",
             stepSize: 1,
-            displayFormats: { 
+            displayFormats: {
               day: "EEE" // Mon, Tue, Wed, etc.
             },
             tooltipFormat: "EEEE, MMM d",
@@ -1110,8 +1110,8 @@ const DeviceDetailsPage = () => {
           baseConfig.time = {
             unit: "day",
             stepSize: 3,
-            displayFormats: { 
-              day: "MMM d" 
+            displayFormats: {
+              day: "MMM d"
             },
             tooltipFormat: "MMM d, yyyy",
           };
@@ -1126,8 +1126,8 @@ const DeviceDetailsPage = () => {
           baseConfig.time = {
             unit: "hour",
             stepSize: 2,
-            displayFormats: { 
-              hour: "HH:mm" 
+            displayFormats: {
+              hour: "HH:mm"
             },
             tooltipFormat: "MMM d, HH:mm",
           };
@@ -1296,7 +1296,7 @@ const DeviceDetailsPage = () => {
   const hasDataForVisualization = useCallback(
     (paramName) => {
       console.log(`🔍 Checking data availability for ${paramName} (device type: ${device?.type})`);
-      
+
       // Check current sensor data
       const hasCurrentData =
         currentSensorData[paramName] !== undefined &&
@@ -1311,19 +1311,19 @@ const DeviceDetailsPage = () => {
         // Check external API parameter mapping
         const externalParamName = getExternalApiParameterName(paramName);
         console.log(`🔍 Checking external param name: ${externalParamName} for device type: ${device?.type}`);
-        
+
         if (Array.isArray(analyticsData[externalParamName])) {
           const validValues = analyticsData[externalParamName].filter(v => v !== 0 && v !== null && v !== undefined);
           hasAnalyticsData = validValues.length > 0;
           console.log(`📊 External API data for ${paramName} (${externalParamName}) on ${device?.type}:`, analyticsData[externalParamName], 'Valid values:', validValues.length);
         }
-        
+
         // Also check direct parameter name
         if (!hasAnalyticsData && analyticsData[paramName] !== undefined) {
           hasAnalyticsData = true;
           console.log(`📊 Direct parameter data for ${paramName} on ${device?.type}:`, analyticsData[paramName]);
         }
-        
+
         // Check if it's in processed array format
         if (!hasAnalyticsData && Array.isArray(analyticsData)) {
           hasAnalyticsData = analyticsData.some((item) => item[paramName] !== undefined);
@@ -1341,7 +1341,7 @@ const DeviceDetailsPage = () => {
           hasRangeData = validValues.length > 0;
           console.log(`📊 Historical range external API data for ${paramName}:`, validValues.length, 'valid values');
         }
-        
+
         // Check legacy array format
         if (!hasRangeData && Array.isArray(historicalRangeData)) {
           hasRangeData = historicalRangeData.some(
@@ -1351,7 +1351,7 @@ const DeviceDetailsPage = () => {
       }
 
       const result = hasCurrentData || hasAnalyticsData || hasRangeData;
-      
+
       console.log(`✅ Data availability for ${paramName} on ${device?.type}:`, {
         hasCurrentData,
         hasAnalyticsData,
@@ -1368,7 +1368,7 @@ const DeviceDetailsPage = () => {
   const getBestAvailableValue = useCallback(
     (paramName) => {
       console.log(`🎯 Getting best available value for ${paramName} (device type: ${device?.type})`);
-      
+
       // Try realtime data first
       if (realtimeSensorData && realtimeSensorData[paramName] !== undefined && realtimeSensorData[paramName] !== null) {
         console.log(`🔴 Using realtime data: ${realtimeSensorData[paramName]}`);
@@ -1384,7 +1384,7 @@ const DeviceDetailsPage = () => {
       // Try analytics data with external API mapping
       if (analyticsData) {
         const externalParamName = getExternalApiParameterName(paramName);
-        
+
         // Check external API format (arrays)
         if (Array.isArray(analyticsData[externalParamName])) {
           const validValues = analyticsData[externalParamName].filter(v => v !== 0 && v !== null && v !== undefined);
@@ -1394,7 +1394,7 @@ const DeviceDetailsPage = () => {
             return latestValue;
           }
         }
-        
+
         // Check direct parameter in analytics
         if (analyticsData[paramName] !== undefined && analyticsData[paramName] !== null) {
           console.log(`🟣 Using direct analytics data: ${analyticsData[paramName]}`);
@@ -1549,7 +1549,7 @@ const DeviceDetailsPage = () => {
   const availableParameters = useMemo(() => {
     console.log(`🔍 Computing available parameters for device type: ${device?.type}`);
     console.log("📊 Current sensor data keys:", Object.keys(currentSensorData));
-    
+
     if (!device?.type) {
       // If no device type, use all non-graphable parameters from current sensor data
       const params = Object.keys(currentSensorData).filter(
@@ -1560,18 +1560,18 @@ const DeviceDetailsPage = () => {
       console.log("📊 No device type - using current sensor data params:", params);
       return params;
     }
-    
+
     // Get device-specific parameters
     const deviceSpecificParams = getParametersForDeviceType(device.type);
     console.log(`📊 Device-specific parameters for ${device.type}:`, deviceSpecificParams);
-    
+
     // Filter to only include parameters that have data
     const availableParams = deviceSpecificParams.filter(paramName => {
       const hasData = hasDataForVisualization(paramName);
       console.log(`📊 Parameter ${paramName} has data for ${device.type}: ${hasData}`);
       return hasData;
     });
-    
+
     console.log(`✅ Final available parameters for ${device.type}:`, availableParams);
     return availableParams;
   }, [currentSensorData, device?.type, hasDataForVisualization]);
@@ -1685,7 +1685,7 @@ const DeviceDetailsPage = () => {
           `🔄 Triggering data fetch for charts. Device type: ${device.type}, Serial: ${device.serialNumber}`,
         );
         console.log(`📅 Custom date range:`, { customStartDate, customEndDate });
-        
+
         if (customStartDate && customEndDate) {
           console.log(`🔄 Fetching historical range data`);
           fetchHistoricalRange();
@@ -1754,11 +1754,10 @@ const DeviceDetailsPage = () => {
         <div className="flex flex-col space-y-3 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
           <div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:space-y-0 sm:space-x-4">
             <div
-              className={`flex items-center justify-center space-x-2 px-3 py-2 rounded-full text-xs sm:text-sm font-semibold shadow-lg ${
-                isConnected
+              className={`flex items-center justify-center space-x-2 px-3 py-2 rounded-full text-xs sm:text-sm font-semibold shadow-lg ${isConnected
                   ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 border-2 border-green-300 dark:border-green-700"
                   : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 border-2 border-red-300 dark:border-red-700"
-              }`}
+                }`}
             >
               {isConnected ? <Wifi className="w-3 h-3 sm:w-4 sm:h-4 animate-pulse" /> : <WifiOff className="w-3 h-3 sm:w-4 sm:h-4" />}
               <span className="text-xs sm:text-sm">{isConnected ? "Real-time Connected" : "Real-time Disconnected"}</span>
@@ -1823,11 +1822,10 @@ const DeviceDetailsPage = () => {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-2 sm:p-3 bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-700/50 dark:to-blue-900/20 rounded-lg space-y-1 sm:space-y-0">
               <strong className="font-semibold text-blue-600 dark:text-blue-400">Status:</strong>
               <span
-                className={`font-bold px-2 py-1 sm:px-3 rounded-full text-xs sm:text-sm shadow ${
-                  device.isActive
+                className={`font-bold px-2 py-1 sm:px-3 rounded-full text-xs sm:text-sm shadow ${device.isActive
                     ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
                     : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
-                }`}
+                  }`}
               >
                 {device.isActive ? "Active" : "Inactive"}
               </span>
@@ -1899,7 +1897,7 @@ const DeviceDetailsPage = () => {
                 <p>Serial: {device?.serialNumber}</p>
                 <p>Device Type: {device?.type}</p>
                 <div>
-                  <button 
+                  <button
                     onClick={() => fetchLatestAnalyticsWithDeviceType()}
                     className="mt-2 px-3 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600 transition-colors"
                   >

@@ -5,7 +5,7 @@ import {
   validateTankDimensions,
 } from "./tankShapeConfigs"
 
-const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5000"
+const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5050"
 
 const api = axios.create({
   baseURL: baseurl,
@@ -391,7 +391,7 @@ export const tankApi = {
       } else {
         // Handle predefined time ranges
         let calculatedStartDate, calculatedEndDate = new Date()
-        
+
         switch (timeRange) {
           case "daily":
           case "24h":
@@ -434,8 +434,8 @@ export const tankApi = {
       return response.data
     } catch (error) {
       console.error("❌ [TankAPI] Error fetching tank volume history:", error)
-      return { 
-        success: false, 
+      return {
+        success: false,
         message: error.response?.data?.message || error.message,
         data: []
       }
@@ -596,7 +596,7 @@ function validateTankData(tankData, isUpdate = false) {
       errors.push("Valid material type is required")
     }
   }
-  
+
   if (!isUpdate || tankData.shape !== undefined) {
     if (!tankData.shape || !validTankShapes.includes(tankData.shape)) {
       errors.push("Valid tank shape is required")

@@ -61,15 +61,13 @@ const DesktopSidebar = React.memo(({ open, toggleSidebar, userInfo, location, na
 
   return (
     <div
-      className={`hidden md:block ${
-        open ? "w-72" : "w-20"
-      } duration-300 h-screen bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-r border-gray-200/50 dark:border-gray-700/50 shadow-2xl`}
+      className={`hidden md:block ${open ? "w-72" : "w-20"
+        } duration-300 h-screen bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-r border-gray-200/50 dark:border-gray-700/50 shadow-2xl`}
     >
       {/* Enhanced Header */}
       <div
-        className={`flex items-center ${
-          open ? "justify-between" : "justify-center"
-        } p-6 border-b border-gray-200/50 dark:border-gray-700/50`}
+        className={`flex items-center ${open ? "justify-between" : "justify-center"
+          } p-6 border-b border-gray-200/50 dark:border-gray-700/50`}
       >
         {open && (
           <div className="flex items-center">
@@ -104,13 +102,11 @@ const DesktopSidebar = React.memo(({ open, toggleSidebar, userInfo, location, na
           <button
             key={item.name}
             onClick={() => navigate(item.path)}
-            className={`flex items-center ${
-              open ? "justify-start px-6" : "justify-center px-3"
-            } w-full py-4 rounded-2xl font-semibold transition-all duration-300 group ${
-              isActivePath(item.path)
+            className={`flex items-center ${open ? "justify-start px-6" : "justify-center px-3"
+              } w-full py-4 rounded-2xl font-semibold transition-all duration-300 group ${isActivePath(item.path)
                 ? `bg-gradient-to-r ${item.gradient} text-white shadow-lg scale-105`
                 : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/50 hover:scale-105 hover:shadow-md"
-            }`}
+              }`}
             title={!open ? item.name : undefined}
           >
             <span className="group-hover:scale-110 transition-transform duration-200">{item.icon}</span>

@@ -986,11 +986,10 @@ const TankTypeManagementPage = () => {
             <div className="flex gap-2 sm:gap-3">
               <button
                 onClick={() => setShowFilters(!showFilters)}
-                className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 rounded-xl transition-all duration-200 text-sm sm:text-base ${
-                  showFilters
+                className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-3 rounded-xl transition-all duration-200 text-sm sm:text-base ${showFilters
                     ? "bg-blue-500 text-white shadow-md"
                     : "bg-white/70 dark:bg-gray-700/70 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600"
-                }`}
+                  }`}
               >
                 <Filter className="w-4 h-4" />
                 <span className="hidden sm:inline">Filters</span>
@@ -1054,21 +1053,19 @@ const TankTypeManagementPage = () => {
               <div className="flex bg-gray-100/70 dark:bg-gray-700/70 backdrop-blur-sm rounded-xl p-1 ml-auto">
                 <button
                   onClick={() => setViewMode("grid")}
-                  className={`p-2 rounded-lg transition-colors duration-200 ${
-                    viewMode === "grid"
+                  className={`p-2 rounded-lg transition-colors duration-200 ${viewMode === "grid"
                       ? "bg-white dark:bg-gray-600 shadow-sm"
                       : "hover:bg-gray-200 dark:hover:bg-gray-600"
-                  }`}
+                    }`}
                 >
                   <Grid3X3 className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
                 <button
                   onClick={() => setViewMode("list")}
-                  className={`p-2 rounded-lg transition-colors duration-200 ${
-                    viewMode === "list"
+                  className={`p-2 rounded-lg transition-colors duration-200 ${viewMode === "list"
                       ? "bg-white dark:bg-gray-600 shadow-sm"
                       : "hover:bg-gray-200 dark:hover:bg-gray-600"
-                  }`}
+                    }`}
                 >
                   <List className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>

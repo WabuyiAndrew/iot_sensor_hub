@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5000"
+  const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5050"
   const PROFILE_FETCH_THROTTLE = 30000 // Increased to 30 seconds
 
   useEffect(() => {

@@ -15,7 +15,7 @@ export const useUserDashboardData = () => {
   const [allDevicesSensorData, setAllDevicesSensorData] = useState({});
   const [loadingDashboardData, setLoadingDashboardData] = useState(true);
 
-  const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5000";
+  const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5050";
 
   const fetchInitialDashboardData = useCallback(async () => {
     if (!isAuthenticated || loadingAuth || !user) {

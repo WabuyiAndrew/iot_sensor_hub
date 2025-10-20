@@ -43,7 +43,7 @@ import {
 import axios from "axios"
 import "./LandingPage.css"
 
-const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5000"
+const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5050"
 
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)

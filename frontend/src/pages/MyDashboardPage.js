@@ -38,7 +38,7 @@ function MyDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
-  const baseurl = process.env.REACT_APP_BASE_URL || 'http://localhost:5000';
+  const baseurl = process.env.REACT_APP_BASE_URL || 'http://localhost:5050';
 
   const dataRef = useRef({
     devices: [],
@@ -108,7 +108,7 @@ function MyDashboardPage() {
 
     if (wsRef.current?.readyState === WebSocket.OPEN) return;
 
-    const wsUrl = process.env.REACT_APP_WEBSOCKET_URL || 'ws://localhost:5000';
+    const wsUrl = process.env.REACT_APP_WEBSOCKET_URL || 'ws://localhost:5050';
     console.log('Connecting to WebSocket:', wsUrl);
 
     try {
@@ -294,7 +294,7 @@ function MyDashboardPage() {
 
         // Fetch ONLY user's assigned devices with enhanced filtering
         let userDevices = [];
-        
+
         if (userData.devices && Array.isArray(userData.devices) && userData.devices.length > 0) {
           try {
             // Method 1: Try the specific my-devices endpoint
@@ -307,27 +307,27 @@ function MyDashboardPage() {
               console.log('Fetched from my-devices endpoint:', userDevices);
             } catch (myDevicesErr) {
               console.warn('my-devices endpoint failed, trying alternative approach...');
-              
+
               // Method 2: Fetch all devices and filter by user's assigned devices
               const allDevicesRes = await axios.get(`${baseurl}/api/devices`, {
                 headers: { Authorization: `Bearer ${cookies.token}` },
                 timeout: 60000,
               });
-              
+
               const allDevices = allDevicesRes.data?.data || allDevicesRes.data || [];
               const userDeviceIds = userData.devices.map((d) => {
                 if (typeof d === 'string') return d;
                 return d._id || d.id;
               }).filter(Boolean);
-              
+
               console.log('User device IDs:', userDeviceIds);
               console.log('All devices count:', allDevices.length);
-              
+
               userDevices = allDevices.filter((device) => {
                 const deviceId = device._id || device.id;
                 return userDeviceIds.includes(deviceId);
               });
-              
+
               console.log('Filtered user devices:', userDevices.length);
             }
 
@@ -384,7 +384,7 @@ function MyDashboardPage() {
             const userDeviceIds = userDevices.map(d => d._id || d.id);
             const alertsRes = await axios.get(`${baseurl}/api/alerts`, {
               headers: { Authorization: `Bearer ${cookies.token}` },
-              params: { 
+              params: {
                 limit: 10,
                 deviceIds: userDeviceIds.join(',') // Send device IDs to filter alerts
               },
@@ -885,13 +885,12 @@ function MyDashboardPage() {
                   {recentAlerts.slice(0, 3).map((alert) => (
                     <div
                       key={alert._id}
-                      className={`p-3 sm:p-4 rounded-lg sm:rounded-xl border-l-4 transition-all duration-300 hover:shadow-md ${
-                        alert.severity === 'critical'
-                          ? 'bg-red-50/80 dark:bg-red-900/20 border-red-500 hover:bg-red-50 dark:hover:bg-red-900/30'
-                          : alert.severity === 'warning'
-                            ? 'bg-yellow-50/80 dark:bg-yellow-900/20 border-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/30'
-                            : 'bg-blue-50/80 dark:bg-blue-900/20 border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30'
-                      }`}
+                      className={`p-3 sm:p-4 rounded-lg sm:rounded-xl border-l-4 transition-all duration-300 hover:shadow-md ${alert.severity === 'critical'
+                        ? 'bg-red-50/80 dark:bg-red-900/20 border-red-500 hover:bg-red-50 dark:hover:bg-red-900/30'
+                        : alert.severity === 'warning'
+                          ? 'bg-yellow-50/80 dark:bg-yellow-900/20 border-yellow-500 hover:bg-yellow-50 dark:hover:bg-yellow-900/30'
+                          : 'bg-blue-50/80 dark:bg-blue-900/20 border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/30'
+                        }`}
                     >
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between">
                         <div className="flex-1 mb-2 sm:mb-0">
@@ -1025,9 +1024,8 @@ function MyDashboardPage() {
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-center space-x-3 min-w-0 flex-1">
                             <div
-                              className={`w-3 h-3 rounded-full flex-shrink-0 ${
-                                device.isActive ? 'bg-green-500' : device.status === 'maintenance' ? 'bg-yellow-500' : 'bg-red-500'
-                              }`}
+                              className={`w-3 h-3 rounded-full flex-shrink-0 ${device.isActive ? 'bg-green-500' : device.status === 'maintenance' ? 'bg-yellow-500' : 'bg-red-500'
+                                }`}
                             ></div>
                             <div className="min-w-0 flex-1">
                               <div className="font-semibold text-gray-900 dark:text-white truncate">{device.name}</div>
@@ -1037,18 +1035,17 @@ function MyDashboardPage() {
                             </div>
                           </div>
                           <span
-                            className={`px-2 py-1 text-xs font-medium rounded-full flex-shrink-0 ${
-                              device.isActive
-                                ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-                                : device.status === 'maintenance'
-                                  ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
-                                  : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
-                            }`}
+                            className={`px-2 py-1 text-xs font-medium rounded-full flex-shrink-0 ${device.isActive
+                              ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300'
+                              : device.status === 'maintenance'
+                                ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
+                                : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+                              }`}
                           >
                             {device.isActive ? 'Active' : device.status === 'maintenance' ? 'Maintenance' : 'Inactive'}
                           </span>
                         </div>
-                        
+
                         <div className="grid grid-cols-2 gap-3 text-xs text-gray-600 dark:text-gray-400 mb-3">
                           <div>
                             <span className="font-medium">Type:</span> {device.type || 'N/A'}
@@ -1078,7 +1075,7 @@ function MyDashboardPage() {
                             <span>{device.signalStrength ? `${device.signalStrength}%` : 'N/A'}</span>
                           </div>
                         </div>
-                        
+
                         <div className="flex items-center justify-between">
                           <div className="text-xs text-gray-500 dark:text-gray-400">
                             Last seen: {device.lastActive
@@ -1137,9 +1134,8 @@ function MyDashboardPage() {
                             <td className="px-4 sm:px-6 py-3 sm:py-4">
                               <div className="flex items-center space-x-3">
                                 <div
-                                  className={`h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full ${
-                                    device.isActive ? 'bg-green-500' : 'bg-red-500'
-                                  } ring-2 ring-white dark:ring-gray-900`}
+                                  className={`h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full ${device.isActive ? 'bg-green-500' : 'bg-red-500'
+                                    } ring-2 ring-white dark:ring-gray-900`}
                                 ></div>
                                 <div>
                                   <div className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base">{device.name}</div>
@@ -1160,11 +1156,10 @@ function MyDashboardPage() {
                             </td>
                             <td className="px-4 sm:px-6 py-3 sm:py-4">
                               <span
-                                className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-semibold ${
-                                  device.isActive
-                                    ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-700'
-                                    : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-700'
-                                }`}
+                                className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-semibold ${device.isActive
+                                  ? 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-700'
+                                  : 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-700'
+                                  }`}
                               >
                                 {device.isActive ? (
                                   <>
@@ -1184,22 +1179,20 @@ function MyDashboardPage() {
                                 <div className="flex items-center space-x-2">
                                   <Battery
                                     size={14}
-                                    className={`${
-                                      device.batteryLevel > 50
-                                        ? 'text-green-500'
-                                        : device.batteryLevel > 20
-                                          ? 'text-yellow-500'
-                                          : 'text-red-500'
-                                    }`}
+                                    className={`${device.batteryLevel > 50
+                                      ? 'text-green-500'
+                                      : device.batteryLevel > 20
+                                        ? 'text-yellow-500'
+                                        : 'text-red-500'
+                                      }`}
                                   />
                                   <span
-                                    className={`font-semibold text-sm ${
-                                      device.batteryLevel > 50
-                                        ? 'text-green-600 dark:text-green-400'
-                                        : device.batteryLevel > 20
-                                          ? 'text-yellow-600 dark:text-yellow-400'
-                                          : 'text-red-600 dark:text-red-400'
-                                    }`}
+                                    className={`font-semibold text-sm ${device.batteryLevel > 50
+                                      ? 'text-green-600 dark:text-green-400'
+                                      : device.batteryLevel > 20
+                                        ? 'text-yellow-600 dark:text-yellow-400'
+                                        : 'text-red-600 dark:text-red-400'
+                                      }`}
                                   >
                                     {device.batteryLevel}%
                                   </span>
@@ -1214,25 +1207,23 @@ function MyDashboardPage() {
                                   {device.signalStrength > 0 ? (
                                     <Wifi
                                       size={14}
-                                      className={`${
-                                        device.signalStrength > 70
-                                          ? 'text-green-500'
-                                          : device.signalStrength > 30
-                                            ? 'text-yellow-500'
-                                            : 'text-red-500'
-                                      }`}
+                                      className={`${device.signalStrength > 70
+                                        ? 'text-green-500'
+                                        : device.signalStrength > 30
+                                          ? 'text-yellow-500'
+                                          : 'text-red-500'
+                                        }`}
                                     />
                                   ) : (
                                     <WifiOff size={14} className="text-gray-400" />
                                   )}
                                   <span
-                                    className={`font-semibold text-sm ${
-                                      device.signalStrength > 70
-                                        ? 'text-green-600 dark:text-green-400'
-                                        : device.signalStrength > 30
-                                          ? 'text-yellow-600 dark:text-yellow-400'
-                                          : 'text-red-600 dark:text-red-400'
-                                    }`}
+                                    className={`font-semibold text-sm ${device.signalStrength > 70
+                                      ? 'text-green-600 dark:text-green-400'
+                                      : device.signalStrength > 30
+                                        ? 'text-yellow-600 dark:text-yellow-400'
+                                        : 'text-red-600 dark:text-red-400'
+                                      }`}
                                   >
                                     {device.signalStrength}%
                                   </span>

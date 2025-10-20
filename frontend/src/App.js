@@ -41,7 +41,7 @@ import AlertsPage from "./pages/AlertsPage.js"
 // import SystemMonitoringPage from "./pages/SystemMonitoringPage.js"
 
 // The baseurl is no longer needed here as it's managed by AuthContext.
-// export const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5000"
+// export const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5050"
 
 function RoutesWithAnimation() {
   const location = useLocation()

@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import axios from "axios"
 
-const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5000"
+const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5050"
 
 // Parameter descriptions for user comprehension
 const PARAM_LABELS = {

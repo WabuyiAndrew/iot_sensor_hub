@@ -5,7 +5,7 @@ const axiosInstance = axios.create({
   withCredentials: true,
   timeout: 30000, // 30 second timeout due to slow backend
   maxRedirects: 3,
-  baseURL: process.env.REACT_APP_BASE_URL || "http://localhost:5000",
+  baseURL: process.env.REACT_APP_BASE_URL || "http://localhost:5050",
 })
 
 // Request interceptor to add auth headers

@@ -9,7 +9,7 @@ import "./Login.css"
 import axios from "axios"
 import { useAuth } from "../contexts/AuthContext"
 
-const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5000"
+const baseurl = process.env.REACT_APP_BASE_URL || "http://localhost:5050"
 // "https://api.2tume.com"
 
 const Login = () => {
