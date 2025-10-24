@@ -167,7 +167,7 @@ export const WebSocketProvider = ({ children }) => {
     isAuthenticatedRef.current = false
     setConnectionStatus((prev) => ({ ...prev, status: "connecting" }))
 
-    const wsUrl = `ws://localhost:5000`
+    const wsUrl = `ws://localhost:5050`
     console.log("Attempting WebSocket connection to:", wsUrl)
     wsRef.current = new WebSocket(wsUrl)
 
@@ -532,7 +532,7 @@ export const WebSocketProvider = ({ children }) => {
   const subscribe = useCallback((handler) => {
     if (typeof handler !== "function") {
       console.error("❌ WebSocket subscribe: handler must be a function")
-      return () => {}
+      return () => { }
     }
     messageHandlersRef.current.add(handler)
     return () => {
@@ -581,7 +581,7 @@ export const WebSocketProvider = ({ children }) => {
     (deviceId, callback) => {
       if (!deviceId || typeof callback !== "function") {
         console.error("❌ subscribeToDevice: deviceId and callback are required")
-        return () => {}
+        return () => { }
       }
 
       console.log(`📡 [WebSocket] Subscribing to device updates: ${deviceId}`)
@@ -669,11 +669,11 @@ export const WebSocketProvider = ({ children }) => {
   const getDeviceSensorData = useCallback((deviceId) => {
     // persistentDataRef.current.sensorData is a Map: deviceId -> { data, timestamp, receivedAt }
     const cachedEntry = persistentDataRef.current.sensorData.get(deviceId)
-    
+
     // Return the main data object if the entry exists, otherwise null
-    return cachedEntry?.data || null 
-  }, []) 
-  
+    return cachedEntry?.data || null
+  }, [])
+
   const getDeviceStatus = useCallback((deviceId) => {
     return persistentDataRef.current.deviceStatuses.get(deviceId) || null
   }, [])
